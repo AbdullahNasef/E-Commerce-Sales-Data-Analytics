@@ -1,10 +1,3 @@
-use nasef;
-go
-drop table dbo.data;
-drop table dbo.dataEcommerce;
-drop table dbo.Ecommerce_data;
-drop table dbo.Ecommerce_t;
-drop table dbo.persons;
 
 --نسخ البيانات النظيفة إلى جدول جديد 
 select 
