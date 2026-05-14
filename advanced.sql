@@ -1,4 +1,4 @@
---CTE
+--1--CTE
 with clean_data as(
 	select 
 		InvoiceDate_F,
@@ -25,7 +25,10 @@ from clean_data
 group by year(InvoiceDate_F),MONTH(InvoiceDate_F)
 order by sales_year,sales_month;
 
--- CTE + LAG + Growth Rate
+
+
+
+--2-- CTE + LAG + Growth Rate
 with monthlySales as(
 	select
 	year(f.InvoiceDate_F) as sales_year,
@@ -53,7 +56,10 @@ select
 from monthlySales
 order by sales_year,sales_month;
 
-----CTE + LAG + Growth Rate for specific product (EX. TOP 20)
+
+
+
+--3-- CTE + LAG + Growth Rate for specific product (EX. TOP 20)
 with ProductMonthlySales as(
 	select
 	p.Description_DP,
@@ -78,7 +84,10 @@ select
 from ProductMonthlySales
 order by sales_year,sales_month;
 
---CTE + Identify top three products in each country
+
+
+
+-- 4--CTE + Identify top three products in each country
 WITH 
 ProductSalesByCountry AS (
     SELECT 
@@ -112,7 +121,9 @@ ORDER BY country_DC, Product_Rank;
 
 
 
--- view
+
+
+--5-- view
 create view v_cleanData as 
 select 
 	f.InvoiceNo_F,
@@ -146,7 +157,9 @@ from v_cleanData
 group by Description_DP
 order by totalSales desc;
 
---- Window Function مع  CTE ب ال  view  ربط ال 
+
+
+--6-- Window Function مع  CTE ب ال  view  ربط ال 
 with monthelyRate as (
 	select 
 	year(InvoiceDate_F) as salse_year,
@@ -191,14 +204,16 @@ select
 from monthlySales
 order by sales_year,sales_month;
 
----Subquery
+
+
+--7--Subquery
 -- الفواتير اللي تخطت المتوسط
 select 
 	InvoiceNo_F,rowtotal
 from v_cleanData
 where rowtotal > (select avg(rowtotal) from v_cleanData );
 
--- تقسيم الفواتير لفئات 
+--8-- تقسيم الفواتير لفئات 
 with avgvalue as(
 	select 
 	InvoiceNo_F,rowtotal
@@ -207,7 +222,7 @@ where rowtotal > (select avg(rowtotal) from v_cleanData )
 )
 select *,ntile(4) over(order by rowtotal desc) as sales_cat
 from avgvalue;
--- اجمالي مبيعات الفئة 1
+--9-- (اجمالي مبيعات (الفئة 1
 with 
 	avgvalue as(
 		select 
@@ -224,7 +239,9 @@ select sum(rowtotal)
 from Cat_Sales
 where sales_cat = 1;
 
--- whereمع  havingاستخدام 
+
+
+--10-- whereمع  havingاستخدام 
 -- الدول التي تجاوزت مبيعاتها 50 ألف دولار مع استبعاد المعاملات الأقل من 100 دولار
 select 
 	c.country_DC,
@@ -235,3 +252,27 @@ inner join Dim_Customers c
 where (f.quantity_F * f.UnitPrice_F) > 100
 group by c.country_DC
 having sum(f.quantity_F * f.UnitPrice_F) > 50000;
+
+
+--11--   و اضافة اعمدة اخرىviewتعديل ال 
+alter view dbo.v_cleanData as
+	select 
+	f.InvoiceNo_F,
+	f.InvoiceDate_F,
+	p.Description_DP,
+	f.Customerid_DC_F,
+	c.country_DC,
+	(f.quantity_F * f.UnitPrice_F) as rowtotal
+from Fact_salse f
+inner join Dim_Products p
+	on f.StockCode_DP_F = p.StockCode_DP_F
+inner join Dim_Customers c
+		on f.Customerid_DC_F = c.Customerid_DC_F
+WHERE f.quantity_F > 0 AND f.UnitPrice_F > 0
+	and P.Description_DP not in (
+    'DAMAGES', 'FAULTY', 'WRONGLY MARKED CARTON 22804', 
+    'MAILOUT', 'POSTAGE', 'DOTCOM POSTAGE', 'CRUK Commission',
+    'WEBSITE FIXED', 'FOR ONLINE RETAIL ORDERS',
+	'ALLOCATE STOCK FOR DOTCOM ORDERS TA')
+	 and P.Description_DP not like '%ADJUST%'
+     and P.Description_DP not like '%STOCK%' ;
