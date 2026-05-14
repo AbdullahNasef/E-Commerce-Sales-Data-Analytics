@@ -1,11 +1,11 @@
 --===============================================================================
-PROJECT: E-Commerce Data Cleaning & Transformation
-AUTHOR: Abdullah Nasef
+--PROJECT: E-Commerce Data Cleaning & Transformation
+--AUTHOR: Abdullah Nasef
 
-DESCRIPTION: 
-    This script make comprehensive Data Cleaning on raw e-commerce data. 
-    It focuses on handling nulls, correcting data types, filtering invalid 
-    transactions, and standardizing categorical columns for final analysis.
+--DESCRIPTION: 
+--    This script make comprehensive Data Cleaning on raw e-commerce data. 
+--    It focuses on handling nulls, correcting data types, filtering invalid 
+--    transactions, and standardizing categorical columns for final analysis.
 --===============================================================================
 -------------------------------------------------------------------------------
 -- STEP 1:  DATA EXPLORATION
