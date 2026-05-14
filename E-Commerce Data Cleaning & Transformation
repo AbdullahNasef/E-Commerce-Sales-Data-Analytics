@@ -1,0 +1,11 @@
+/*
+===============================================================================
+PROJECT: E-Commerce Data Cleaning & Transformation
+AUTHOR: Abdullah
+DATE: 2026-05-14
+DESCRIPTION: 
+    This script performs comprehensive Data Cleaning on raw e-commerce data. 
+    It focuses on handling nulls, correcting data types, filtering invalid 
+    transactions, and standardizing categorical columns for final analysis.
+===============================================================================
+*/
